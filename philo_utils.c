@@ -6,13 +6,33 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 13:15:37 by lburkins          #+#    #+#             */
-/*   Updated: 2024/05/21 09:48:04 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/05/30 14:33:43 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 //ADD FUNCTION  TO SET STRUCTS TO ZERO.
+
+void	destroy_mutexes(t_philo *philo, t_data *data)
+{
+	int	i;
+
+	i = 0;
+	(void)philo;
+	while (i < data->num_of_philos)
+	{
+		if (pthread_mutex_destroy(&data->forks[i]) != 0)
+		{
+			//free stuff - forks, philos.
+			error_n_exit("Error destroying mutexes\n");
+		}
+		i++;
+	}
+	/*DESTROY OTHER MUTEXES
+	if (pthread_mutex_destroy())
+	*/
+}
 
 size_t	get_current_time(void)
 {

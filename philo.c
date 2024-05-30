@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 15:49:55 by lburkins          #+#    #+#             */
-/*   Updated: 2024/05/27 14:54:43 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/05/30 13:17:02 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,27 +47,21 @@ void	check_args(int argc, char **argv)
 int	main(int argc, char **argv)
 {
 	t_philo			*philo;
-	pthread_mutex_t	*forks;
 	t_data			data;
 
 	check_args(argc, argv);
-	data = init_data(argc, argv);
+	init_data(argv, &data);//inc. data->forks
 	philo = malloc(sizeof(t_philo) * data.num_of_philos);
 	if (!philo)
 		error_n_exit("Malloc error: creating philos\n");
-	forks = malloc(sizeof(pthread_mutex_t) * data.num_of_philos);
-	if (!forks)
-	{
-		free(philo);
-		error_n_exit("Malloc error: creating forks\n");
-	}
+		
 	//init_mutexes function here
-	if (init_mutexes(forks, philo, data.num_of_philos) != 0)
+	init_philos(philo, &data);
+	/*if (init_mutexes(data, philo) != 0)
 	{
 		//destroy mutexes
 		error_n_exit("Error initializing mutexes\n");
-	}
-	init_philos(philo, data);
+	}*/
 	// init_threads(philos, forks);
 	return (0);
 }
