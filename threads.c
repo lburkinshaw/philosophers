@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 13:36:49 by lburkins          #+#    #+#             */
-/*   Updated: 2024/05/30 15:02:57 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/05/31 13:18:24 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ void	init_threads(t_philo *philo, t_data *data)
 			//free stuff - forks, philos.
 			error_n_exit("Error creating philo threads\n");
 		}
-		//usleep(42); //need to check why?
+		printf("Created thread for philo %d\n", i);
+		usleep(42); //need to check why?
 		i++;
 	}
 	//if (mointoring(philo) == 1)

@@ -6,13 +6,23 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 13:15:37 by lburkins          #+#    #+#             */
-/*   Updated: 2024/05/30 14:33:43 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/05/31 14:18:40 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-//ADD FUNCTION  TO SET STRUCTS TO ZERO.
+//ADD FUNCTION  TO SET STRUCTS TO ZERO??
+
+void	print_action(t_philo *philo, char *action)
+{
+	int	timestamp;
+
+	pthread_mutex_lock(&philo->data->write_lock);
+	timestamp = get_current_time() - philo->data->start_time;
+	printf("%d %d %s\n", timestamp, philo->philo_index, action);
+	pthread_mutex_unlock(&philo->data->write_lock);
+}
 
 void	destroy_mutexes(t_philo *philo, t_data *data)
 {

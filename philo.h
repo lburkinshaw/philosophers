@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 13:20:40 by lburkins          #+#    #+#             */
-/*   Updated: 2024/05/30 15:56:19 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/05/31 13:58:39 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,10 @@ int		ft_isdigit(int c);
 size_t	get_current_time(void);
 void	init_data(char **argv, t_data *data);
 int		init_mutexes(t_data *data);
-void	init_forks(t_data *data);
+// void	init_forks(t_data *data);
 void	init_philos(t_philo *philo, t_data *data);
 void	init_threads(t_philo *philo, t_data *data);
 void	*philosophize(void *ptr);
+void	print_action(t_philo *philo, char *action);
 
 #endif

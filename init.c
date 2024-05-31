@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 14:16:09 by lburkins          #+#    #+#             */
-/*   Updated: 2024/05/30 15:56:43 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/05/31 10:50:57 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,16 @@ int	init_mutexes(t_data *data)
 	{
 		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
 			return (1);
+		printf("Fork %d mutex initiated at loc %p\n", i, (void *)&data->forks[i]);
 		i++;
 	}
 	if (pthread_mutex_init(&data->meal_lock, NULL) != 0)
 		return (1);
+	printf("Meal_lock mutex initiated at loc %p\n", (void *)&data->meal_lock);
 	if (pthread_mutex_init(&data->write_lock, NULL) != 0)
 		return (1);
-	return (0);
+	printf("Write_lock mutex initiated at loc %p\n", (void *)&data->write_lock);
+		return (0);
 }
 
 // int	init_mutexes(t_data data, t_philo *philo)
@@ -55,13 +58,13 @@ void	init_data(char **argv, t_data *data)
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
 	if (argv[5])
-		data->num_of_meals =  ft_atoi(argv[5]); //Not sure this is the right place or data??
+		data->num_of_meals = ft_atoi(argv[5]); //Not sure this is the right place or data??
 	else
 		data->num_of_meals = -1;//or 0?
 	data->start_time = get_current_time();
 	if (init_mutexes(data) != 0)
 	{
-		//anything to free yet?? or destroy??	
+		//anything to free yet?? or destroy??
 	}
 }
 
