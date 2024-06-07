@@ -6,7 +6,7 @@
 #    By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/16 15:43:19 by lburkins          #+#    #+#              #
-#    Updated: 2024/05/30 13:38:04 by lburkins         ###   ########.fr        #
+#    Updated: 2024/06/05 13:34:00 by lburkins         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ SRCS		=		philo.c \
 					philo_utils.c \
 					init.c \
 					threads.c \
+					monitoring.c \
 					philosophize.c \
 					error_handling.c 
 

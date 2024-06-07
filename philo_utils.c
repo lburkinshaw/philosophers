@@ -6,13 +6,40 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 13:15:37 by lburkins          #+#    #+#             */
-/*   Updated: 2024/05/31 14:18:40 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/05 14:13:59 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 //ADD FUNCTION  TO SET STRUCTS TO ZERO??
+
+
+
+
+
+// void	get_forks(t_philo *philo, pthread_mutex_t **f1, pthread_mutex_t **f2)
+// {
+// 	if (philo->philo_index % 2 == 0)//alternated order odd/even philos pick up forks (left or right first)
+// 	{
+// 		*f1 = philo->left_fork;
+// 		*f2 = philo->right_fork;
+// 	}
+// 	else
+// 	{
+// 		*f1 = philo->right_fork;
+// 		*f2 = philo->left_fork;
+// 	}
+// }
+
+void	ft_usleep(size_t milisecs)
+{
+	int	start;
+
+	start = get_current_time();
+	while ((get_current_time() - start) < milisecs)
+		usleep(500);
+}
 
 void	print_action(t_philo *philo, char *action)
 {

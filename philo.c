@@ -6,42 +6,57 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 15:49:55 by lburkins          #+#    #+#             */
-/*   Updated: 2024/05/30 13:17:02 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/07 15:45:26 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	check_value(char *arg)
+static int	check_value(char *arg)
 {
 	int	i;
 
 	i = 0;
 	if (ft_atoi(arg) < 0)
-		error_n_exit("Error. Arguments cannot be negative\n");
+	{
+		printf("Error. Arguments cannot be negative\n");
+		return (-1);
+	}	
 	while (arg[i])
 	{
 		if (ft_isdigit(arg[i]) == 0)
-			error_n_exit("Error. Arguments must be positive numbers\n"); //i think
+		{
+			printf("Error. Arguments must be positive numbers\n"); //i think
+			return (-1);
+		}
 		i++;
 	}
+	return (0);
 }
 
-void	check_args(int argc, char **argv)
+static int	check_args(int argc, char **argv)
 {
 	int	i;
 
 	i = 1;
 	printf("checking args\n");
 	if (argc < 5 || argc > 6)
-		error_n_exit("Error: Incorrect number of arguments\n"); //5/6: number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
+	{
+		printf("Error: Incorrect number of arguments\n"); //5/6: number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
+		return (-1);
+	}
 	if (ft_atoi(argv[1]) < 1)//checks number_of_philos
-		error_n_exit("Error. At least 1 philosopher required\n");
+	{
+		printf("Error. At least 1 philosopher required\n");
+		return (-1);
+	}
 	while (argv[i])
 	{
-		check_value(argv[i]);
+		if (check_value(argv[i]) != 0)
+			return (-1);
 		i++;
 	}
+	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -49,19 +64,27 @@ int	main(int argc, char **argv)
 	t_philo			*philo;
 	t_data			data;
 
-	check_args(argc, argv);
-	init_data(argv, &data);//inc. data->forks
+	if (check_args(argc, argv) != 0)
+		return (-1);
+	if (init_data(argv, &data) != 0)
+		return (-1);//inc. data->forks
 	philo = malloc(sizeof(t_philo) * data.num_of_philos);
 	if (!philo)
-		error_n_exit("Malloc error: creating philos\n");
-		
-	//init_mutexes function here
+	{
+		//destroy and free forks.
+		printf("Malloc error: creating philos\n");
+		return (-1);
+	}	
 	init_philos(philo, &data);
+	if (init_threads(philo, &data)!= 0)
+		return (-1);
 	/*if (init_mutexes(data, philo) != 0)
 	{
 		//destroy mutexes
 		error_n_exit("Error initializing mutexes\n");
 	}*/
 	// init_threads(philos, forks);
+	free(philo);//is this and below enough?
+	free(data.forks);
 	return (0);
 }
