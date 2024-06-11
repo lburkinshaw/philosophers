@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 15:49:55 by lburkins          #+#    #+#             */
-/*   Updated: 2024/06/07 15:45:26 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/11 14:09:21 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,14 @@ static int	check_value(char *arg)
 	if (ft_atoi(arg) < 0)
 	{
 		printf("Error. Arguments cannot be negative\n");
-		return (-1);
-	}	
+		return (1);
+	}
 	while (arg[i])
 	{
 		if (ft_isdigit(arg[i]) == 0)
 		{
 			printf("Error. Arguments must be positive numbers\n"); //i think
-			return (-1);
+			return (1);
 		}
 		i++;
 	}
@@ -65,26 +65,31 @@ int	main(int argc, char **argv)
 	t_data			data;
 
 	if (check_args(argc, argv) != 0)
-		return (-1);
+		return (1);
 	if (init_data(argv, &data) != 0)
-		return (-1);//inc. data->forks
+	{
+		destroy_data_mutexes(&data);//inc. data->forks
+		return (1);
+	}
 	philo = malloc(sizeof(t_philo) * data.num_of_philos);
 	if (!philo)
 	{
-		//destroy and free forks.
+		destroy_data_mutexes(&data);
 		printf("Malloc error: creating philos\n");
-		return (-1);
-	}	
-	init_philos(philo, &data);
-	if (init_threads(philo, &data)!= 0)
-		return (-1);
-	/*if (init_mutexes(data, philo) != 0)
+		return (1);
+	}
+	if (init_philos(philo, &data) != 0)
 	{
-		//destroy mutexes
-		error_n_exit("Error initializing mutexes\n");
-	}*/
-	// init_threads(philos, forks);
-	free(philo);//is this and below enough?
-	free(data.forks);
+		destroy_data_mutexes(&data);
+		return (1);
+	}
+	if (init_threads(philo, &data)!= 0)
+	{
+		destroy_mutexes(&data, philo);//free stuff?
+		return (1);
+	}
+	// free_philos(&philo);//only malloced once so only ned to free once?
+	free(philo);
+	printf("The End\n");
 	return (0);
 }

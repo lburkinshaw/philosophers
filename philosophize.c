@@ -6,12 +6,24 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 16:32:11 by lburkins          #+#    #+#             */
-/*   Updated: 2024/06/07 14:10:18 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/11 12:39:47 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+int anyone_dead_yet(t_data *data)
+{
+	pthread_mutex_lock(&data->death_lock);
+		if (data->dead_flag == true)
+		{
+			// printf("noticed dead philo and exiting\n");
+			pthread_mutex_unlock(&data->death_lock);
+			return (1);
+		}
+		pthread_mutex_unlock(&data->death_lock);
+		return (0);
+}
 void	get_forks(t_philo *philo, pthread_mutex_t **f1, pthread_mutex_t **f2)
 {
 	if (philo->philo_index % 2 == 0)//alternated order odd/even philos pick up forks (left or right first)
@@ -26,7 +38,7 @@ void	get_forks(t_philo *philo, pthread_mutex_t **f1, pthread_mutex_t **f2)
 	}
 }
 
-static void	eating(t_philo *philo)
+static int	eating(t_philo *philo)
 {
 	pthread_mutex_t	*first_fork;
 	pthread_mutex_t	*second_fork;
@@ -39,10 +51,22 @@ static void	eating(t_philo *philo)
 	//add in condition for if only 1 philo?? see Tom's code.
 	if (philo->data->num_of_philos == 1)
 	{
+		// printf("test philos = 1");
 		ft_usleep(philo->data->time_to_die);
 		//do something else???
 	}
+	if (anyone_dead_yet(philo->data))
+    {
+        pthread_mutex_unlock(first_fork);
+        return (1);
+    }
 	pthread_mutex_lock(second_fork);
+	if (anyone_dead_yet(philo->data))
+    {
+        pthread_mutex_unlock(second_fork);
+		pthread_mutex_unlock(first_fork);
+        return (1);
+    }
 	print_action(philo, "has taken a fork");
 	print_action(philo, "is eating");
 	pthread_mutex_lock(&philo->meal_lock);//to avoid race condition when monitoring checks this.
@@ -53,19 +77,26 @@ static void	eating(t_philo *philo)
 	ft_usleep(philo->data->time_to_eat);
 	pthread_mutex_unlock(second_fork);
 	pthread_mutex_unlock(first_fork);
-	// usleep(100); //just for testing slowly
+	return (0);
 }
 
-static void	thinking(t_philo *philo)
+static int	thinking(t_philo *philo)
 {
+	if (anyone_dead_yet(philo->data) == 1)
+		return (1);
 	print_action(philo, "is thinking");
+	return (anyone_dead_yet(philo->data));
 }
-static void	sleeping(t_philo *philo)
+static int	sleeping(t_philo *philo)
 {
 	// set_all_meals_eaten_flag(philo);
+	if (anyone_dead_yet(philo->data) == 1)
+		return (1);
 	print_action(philo, "is sleeping");
-	ft_usleep(philo->data->time_to_sleep);//make own ft_usleep function?
+	ft_usleep(philo->data->time_to_sleep);
+	return (anyone_dead_yet(philo->data));
 }
+
 
 void	*philosophize(void *ptr)
 {
@@ -77,9 +108,38 @@ void	*philosophize(void *ptr)
 	{
 		// printf("test\n");//infinite loop until add in meal count and deaths.
 		// sleep(5);//just to delay printf statement to check prev info.
-		eating(philo);
-		sleeping(philo);
-		thinking(philo);
+		// pthread_mutex_lock(&philo->data->death_lock);
+
+		if (anyone_dead_yet(philo->data) == 1)
+		{
+			printf("%d noticed dead philo and exiting\n", philo->philo_index);
+			return (ptr);
+		}
+		if (eating(philo) == 1)
+		{
+			printf("%d noticed dead philo and exiting\n", philo->philo_index);
+			return (ptr);
+		}
+		// if (anyone_dead_yet(philo->data) == 1)
+		// {
+		// 	printf("%d noticed dead philo and exiting\n", philo->philo_index);
+		// 	return (ptr);
+		// }
+		if (sleeping(philo) == 1)
+		{
+			printf("%d noticed dead philo and exiting\n", philo->philo_index);
+			return (ptr);
+		}
+		// if (anyone_dead_yet(philo->data) == 1)
+		// {
+		// 	printf("%d noticed dead philo and exiting\n", philo->philo_index);
+		// 	return (ptr);
+		// }
+		if (thinking(philo) == 1)
+		{
+			printf("%d noticed dead philo and exiting\n", philo->philo_index);
+			return (ptr);
+		}
 	}
-	return (NULL);
+		return (NULL);
 }

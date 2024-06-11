@@ -6,7 +6,7 @@
 #    By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/16 15:43:19 by lburkins          #+#    #+#              #
-#    Updated: 2024/06/05 13:34:00 by lburkins         ###   ########.fr        #
+#    Updated: 2024/06/11 13:41:59 by lburkins         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,8 @@ SRCS		=		philo.c \
 					threads.c \
 					monitoring.c \
 					philosophize.c \
-					error_handling.c 
+					destroy.c \
+					error_handling.c
 
 OBJS		=		$(SRCS:.c=.o)
 
@@ -28,7 +29,7 @@ CC			=		cc
 
 RM			=		@rm -f
 
-CFLAGS		=		-Wall -Wextra -Werror
+CFLAGS		=		-Wall -Wextra -Werror 
 
 ANSI_GREEN := \033[0;32m
 ANSI_CYAN := \033[0;36m

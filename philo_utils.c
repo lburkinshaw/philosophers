@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 13:15:37 by lburkins          #+#    #+#             */
-/*   Updated: 2024/06/05 14:13:59 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/11 12:44:01 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,34 +41,30 @@ void	ft_usleep(size_t milisecs)
 		usleep(500);
 }
 
-void	print_action(t_philo *philo, char *action)
+void	print_death(t_philo *philo)
 {
 	int	timestamp;
 
 	pthread_mutex_lock(&philo->data->write_lock);
 	timestamp = get_current_time() - philo->data->start_time;
-	printf("%d %d %s\n", timestamp, philo->philo_index, action);
+	printf("%d %d has died\n", timestamp, philo->philo_index);
 	pthread_mutex_unlock(&philo->data->write_lock);
 }
 
-void	destroy_mutexes(t_philo *philo, t_data *data)
+void	print_action(t_philo *philo, char *action)
 {
-	int	i;
-
-	i = 0;
-	(void)philo;
-	while (i < data->num_of_philos)
+	int	timestamp;
+	if (anyone_dead_yet(philo->data) == 1)
+		return ;
+	pthread_mutex_lock(&philo->data->write_lock);
+	timestamp = get_current_time() - philo->data->start_time;
+	if (philo->data->can_write == false || anyone_dead_yet(philo->data) == 1)
 	{
-		if (pthread_mutex_destroy(&data->forks[i]) != 0)
-		{
-			//free stuff - forks, philos.
-			error_n_exit("Error destroying mutexes\n");
-		}
-		i++;
+		pthread_mutex_unlock(&philo->data->write_lock);
+		return ;
 	}
-	/*DESTROY OTHER MUTEXES
-	if (pthread_mutex_destroy())
-	*/
+	printf("%d %d %s\n", timestamp, philo->philo_index, action);
+	pthread_mutex_unlock(&philo->data->write_lock);
 }
 
 size_t	get_current_time(void)
