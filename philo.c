@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 15:49:55 by lburkins          #+#    #+#             */
-/*   Updated: 2024/06/11 14:09:21 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/13 11:00:38 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	check_value(char *arg)
 	{
 		if (ft_isdigit(arg[i]) == 0)
 		{
-			printf("Error. Arguments must be positive numbers\n"); //i think
+			printf("Error. Arguments must be positive numbers\n");
 			return (1);
 		}
 		i++;
@@ -42,10 +42,10 @@ static int	check_args(int argc, char **argv)
 	printf("checking args\n");
 	if (argc < 5 || argc > 6)
 	{
-		printf("Error: Incorrect number of arguments\n"); //5/6: number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
-		return (-1);
+		printf("Error: Incorrect number of arguments\n");
+		return (1);
 	}
-	if (ft_atoi(argv[1]) < 1)//checks number_of_philos
+	if (ft_atoi(argv[1]) < 1)
 	{
 		printf("Error. At least 1 philosopher required\n");
 		return (-1);
@@ -68,14 +68,13 @@ int	main(int argc, char **argv)
 		return (1);
 	if (init_data(argv, &data) != 0)
 	{
-		destroy_data_mutexes(&data);//inc. data->forks
+		destroy_data_mutexes(&data);
 		return (1);
 	}
 	philo = malloc(sizeof(t_philo) * data.num_of_philos);
 	if (!philo)
 	{
 		destroy_data_mutexes(&data);
-		printf("Malloc error: creating philos\n");
 		return (1);
 	}
 	if (init_philos(philo, &data) != 0)
@@ -83,13 +82,11 @@ int	main(int argc, char **argv)
 		destroy_data_mutexes(&data);
 		return (1);
 	}
-	if (init_threads(philo, &data)!= 0)
+	if (init_threads(philo, &data) != 0)
 	{
-		destroy_mutexes(&data, philo);//free stuff?
+		cleanup(&data, philo);
 		return (1);
 	}
-	// free_philos(&philo);//only malloced once so only ned to free once?
-	free(philo);
-	printf("The End\n");
+	cleanup(&data, philo);
 	return (0);
 }

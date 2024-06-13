@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 14:16:09 by lburkins          #+#    #+#             */
-/*   Updated: 2024/06/11 11:59:40 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/13 11:13:50 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,19 @@ int	init_mutexes(t_data *data)
 	i = 0;
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->num_of_philos);
 	if (!data->forks)
-		return (1);//if change order in main, may need to free philos
+		return (1);
 	while (i < data->num_of_philos)
 	{
 		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
 			return (1);
-		printf("Fork %d mutex initiated at loc %p\n", i, (void *)&data->forks[i]);
 		i++;
 	}
 	if (pthread_mutex_init(&data->write_lock, NULL) != 0)
 		return (1);
-	printf("Write_lock mutex initiated at loc %p\n", (void *)&data->write_lock);
 	if (pthread_mutex_init(&data->death_lock, NULL) != 0)
 		return (1);
-	printf("Death_lock mutex initiated at loc %p\n", (void *)&data->death_lock);
+	if (pthread_mutex_init(&data->full_lock, NULL) != 0)
+		return (1);
 	return (0);
 }
 void	print_data(t_data *data)
@@ -43,7 +42,6 @@ void	print_data(t_data *data)
 	printf("Time to sleep: %d\n", data->time_to_sleep);
 }
 
-
 int	init_data(char **argv, t_data *data)
 {
 	data->num_of_philos = ft_atoi(argv[1]);
@@ -52,22 +50,19 @@ int	init_data(char **argv, t_data *data)
 	data->time_to_sleep = ft_atoi(argv[4]);
 	data->dead_flag = false;
 	if (argv[5])
-		data->num_of_meals = ft_atoi(argv[5]); //Not sure this is the right place or data??
+		data->num_of_meals = ft_atoi(argv[5]);
 	else
-		data->num_of_meals = -1;//or 0?
+		data->num_of_meals = -1;
 	data->start_time = get_current_time();
-	data->dead_flag = false; //do i use this?
+	data->dead_flag = false;
 	data->can_write = true;
+	data->full_flag = false;
 	if (init_mutexes(data) != 0)
 	{
 		destroy_data_mutexes(data);
-		if (data->forks)
-			free(data->forks);//NOT SURE ABOUT THIS. is this enough?? do i need a loop?
-		printf("Error data inititalizing mutexes\n");
+		printf("Error inititalizing data mutexes\n");
 		return (1);
-		//anything to free yet?? Forks??
 	}
-	print_data(data); //delete
 	return (0);
 }
 void	print_philos(t_philo *philo, t_data data)
@@ -98,7 +93,7 @@ int	init_philos(t_philo *philo, t_data *data)
 		philo[i].data = data;
 		philo[i].philo_index = i + 1;
 		philo[i].num_meals_eaten = 0;
-		philo[i].last_meal_time = get_current_time();
+		philo[i].last_meal_time = data->start_time;//was previously getcurrenttime but this seems more consistent
 		philo[i].alive = true;
 		philo[i].all_meals_eaten = false;
 		philo[i].right_fork = &data->forks[i];
@@ -112,15 +107,14 @@ int	init_philos(t_philo *philo, t_data *data)
 			printf("Error initializing meal_lock mutex\n");
 			return (1);
 		}
-		if (pthread_mutex_init(&philo[i].alive_lock, NULL) != 0)
-		{
-			destroy_data_mutexes(data);
-			printf("Error initializing meal_lock mutex\n");
-			return (1);
-		}
-		printf("Meal_lock mutex initialized at loc %p\n", (void *)&philo[i].meal_lock);
+		// if (pthread_mutex_init(&philo[i].alive_lock, NULL) != 0)
+		// {
+		// 	destroy_data_mutexes(data);
+		// 	printf("Error initializing meal_lock mutex\n");
+		// 	return (1);
+		// }
 		i++;
 	}
-	print_philos(philo, *data);
+	print_philos(philo, *data);//delete later
 	return (0);
 }

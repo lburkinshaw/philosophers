@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 12:59:16 by lburkins          #+#    #+#             */
-/*   Updated: 2024/05/27 14:02:11 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/11 15:41:38 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,3 @@ void	error_msg(char *msg)
 	printf("%s\n", msg);
 }
 
-void	error_n_exit(char *msg)
-{
-	error_msg(msg);
-	exit(1);
-}

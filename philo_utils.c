@@ -6,39 +6,67 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 13:15:37 by lburkins          #+#    #+#             */
-/*   Updated: 2024/06/11 12:44:01 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/13 13:17:30 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 //ADD FUNCTION  TO SET STRUCTS TO ZERO??
+int	am_i_full(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->meal_lock);
+	if (philo->all_meals_eaten == true)
+	{
+		pthread_mutex_unlock(&philo->meal_lock);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->meal_lock);
+	return (0);
+}
+int	anyone_dead_yet(t_data *data)
+{
+	pthread_mutex_lock(&data->death_lock);
+	if (data->dead_flag == true)
+	{
+		// printf("noticed dead philo and exiting\n");
+		pthread_mutex_unlock(&data->death_lock);
+		return (1);
+	}
+	pthread_mutex_unlock(&data->death_lock);
+	return (0);
+}
 
+int	all_full_yet(t_data *data)
+{
+	pthread_mutex_lock(&data->full_lock);
+	if (data->full_flag == true)
+	{
+		printf("all full\n");
+		pthread_mutex_unlock(&data->full_lock);
+		return (1);
+	}
+	pthread_mutex_unlock(&data->full_lock);
+	return (0);
+}
 
-
-
-
-// void	get_forks(t_philo *philo, pthread_mutex_t **f1, pthread_mutex_t **f2)
-// {
-// 	if (philo->philo_index % 2 == 0)//alternated order odd/even philos pick up forks (left or right first)
-// 	{
-// 		*f1 = philo->left_fork;
-// 		*f2 = philo->right_fork;
-// 	}
-// 	else
-// 	{
-// 		*f1 = philo->right_fork;
-// 		*f2 = philo->left_fork;
-// 	}
-// }
+int	dead_or_full(t_data *data)
+{
+	if (anyone_dead_yet(data) || all_full_yet(data))
+		return (1);
+	else
+		return (0);
+}
 
 void	ft_usleep(size_t milisecs)
 {
-	int	start;
+	size_t	start;
 
 	start = get_current_time();
 	while ((get_current_time() - start) < milisecs)
+	{
 		usleep(500);
+	}
 }
 
 void	print_death(t_philo *philo)
@@ -47,7 +75,7 @@ void	print_death(t_philo *philo)
 
 	pthread_mutex_lock(&philo->data->write_lock);
 	timestamp = get_current_time() - philo->data->start_time;
-	printf("%d %d has died\n", timestamp, philo->philo_index);
+	printf("%d %d died\n", timestamp, philo->philo_index);
 	pthread_mutex_unlock(&philo->data->write_lock);
 }
 
@@ -58,12 +86,8 @@ void	print_action(t_philo *philo, char *action)
 		return ;
 	pthread_mutex_lock(&philo->data->write_lock);
 	timestamp = get_current_time() - philo->data->start_time;
-	if (philo->data->can_write == false || anyone_dead_yet(philo->data) == 1)
-	{
-		pthread_mutex_unlock(&philo->data->write_lock);
-		return ;
-	}
-	printf("%d %d %s\n", timestamp, philo->philo_index, action);
+	if (philo->data->can_write == true || anyone_dead_yet(philo->data) == 0)
+		printf("%d %d %s\n", timestamp, philo->philo_index, action);
 	pthread_mutex_unlock(&philo->data->write_lock);
 }
 
