@@ -6,13 +6,13 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 16:32:11 by lburkins          #+#    #+#             */
-/*   Updated: 2024/06/13 13:24:11 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/13 16:22:37 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	dinner_for_one(t_philo *philo)
+static int	dinner_for_one(t_philo *philo)
 {
 	ft_usleep(philo->data->time_to_die);
 	pthread_mutex_unlock(philo->right_fork);
@@ -41,8 +41,8 @@ static int	eating(t_philo *philo)
 	philo->num_meals_eaten++;
 	philo->last_meal_time = get_current_time();
 	pthread_mutex_unlock(&philo->meal_lock);
-	pthread_mutex_unlock(philo->right_fork);
 	pthread_mutex_unlock(philo->left_fork);
+	pthread_mutex_unlock(philo->right_fork);
 	return (0);
 }
 
@@ -69,24 +69,15 @@ void	*philosophize(void *ptr)
 
 	philo = (t_philo *)ptr;
 	if (philo->philo_index % 2 == 0)
-		usleep(42);
+		ft_usleep(42);
 	while (!dead_or_full(philo->data))
 	{
 		if (eating(philo) == 1)
-		{
-			printf("%d noticed and ending\n", philo->philo_index);
-			return (ptr);
-		}
+			return (NULL);
 		if (sleeping(philo) == 1)
-		{
-			printf("%d noticed and ending\n", philo->philo_index);
-			return (ptr);
-		}
+			return (NULL);
 		if (thinking(philo) == 1)
-		{
-			printf("%d noticed and ending\n", philo->philo_index);
-			return (ptr);
-		}
+			return (NULL);
 	}
 	return (NULL);
 }

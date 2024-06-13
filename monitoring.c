@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 13:30:08 by lburkins          #+#    #+#             */
-/*   Updated: 2024/06/13 13:08:44 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/13 14:19:47 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ static int	philo_dead_yet(t_philo *philo)
 	elapsed_time = current_time - philo->last_meal_time;
 	if (elapsed_time >= philo->data->time_to_die)
 	{
-		printf("Philosopher %d: current_time = %zu, last_meal_time = %zu, elapsed_time = %zu\n", philo->philo_index, current_time, philo->last_meal_time, elapsed_time);
 		print_death(philo);
 		pthread_mutex_unlock(&philo->meal_lock);
 		return (1);
@@ -66,8 +65,7 @@ static int	meal_check(t_philo *philo)
 			pthread_mutex_unlock(&philo[i].meal_lock);
 			return (0);
 		}
-		philo[i].all_meals_eaten = true;//this should be either dead_flag or create full_flag for all philos (function checks all)
-		// printf("philo %d is full\n", philo[i].philo_index);
+		philo[i].all_meals_eaten = true;
 		pthread_mutex_unlock(&philo[i].meal_lock);
 		i++;
 	}
@@ -81,7 +79,6 @@ void	*monitoring(void *ptr)
 {
 	t_philo	*philo;
 
-	printf("test monitoring\n");
 	philo = (t_philo *)ptr;
 	while (1)
 	{

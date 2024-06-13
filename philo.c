@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 15:49:55 by lburkins          #+#    #+#             */
-/*   Updated: 2024/06/13 11:00:38 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/13 16:13:51 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ static int	check_args(int argc, char **argv)
 	int	i;
 
 	i = 1;
-	printf("checking args\n");
 	if (argc < 5 || argc > 6)
 	{
 		printf("Error: Incorrect number of arguments\n");
@@ -61,27 +60,18 @@ static int	check_args(int argc, char **argv)
 
 int	main(int argc, char **argv)
 {
-	t_philo			*philo;
-	t_data			data;
+	t_philo	*philo;
+	t_data	data;
 
 	if (check_args(argc, argv) != 0)
 		return (1);
 	if (init_data(argv, &data) != 0)
-	{
-		destroy_data_mutexes(&data);
-		return (1);
-	}
+		return (destroy_data_mutexes(&data));
 	philo = malloc(sizeof(t_philo) * data.num_of_philos);
 	if (!philo)
-	{
-		destroy_data_mutexes(&data);
-		return (1);
-	}
+		return (destroy_data_mutexes(&data));
 	if (init_philos(philo, &data) != 0)
-	{
-		destroy_data_mutexes(&data);
-		return (1);
-	}
+		return (destroy_data_mutexes(&data));
 	if (init_threads(philo, &data) != 0)
 	{
 		cleanup(&data, philo);

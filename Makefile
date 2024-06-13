@@ -6,7 +6,7 @@
 #    By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/16 15:43:19 by lburkins          #+#    #+#              #
-#    Updated: 2024/06/11 15:55:31 by lburkins         ###   ########.fr        #
+#    Updated: 2024/06/13 16:43:44 by lburkins         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,12 +14,13 @@ NAME		=		philo
 
 SRCS		=		philo.c \
 					philo_utils.c \
+					print_msg.c \
+					dead_or_full.c \
 					init.c \
 					threads.c \
 					monitoring.c \
 					philosophize.c \
-					cleanup.c \
-					error_handling.c
+					cleanup.c
 
 OBJS		=		$(SRCS:.c=.o)
 

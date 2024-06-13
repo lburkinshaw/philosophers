@@ -6,13 +6,13 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 14:16:09 by lburkins          #+#    #+#             */
-/*   Updated: 2024/06/13 11:13:50 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/13 14:19:42 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	init_mutexes(t_data *data)
+static int	init_mutexes(t_data *data)
 {
 	int	i;
 
@@ -33,13 +33,6 @@ int	init_mutexes(t_data *data)
 	if (pthread_mutex_init(&data->full_lock, NULL) != 0)
 		return (1);
 	return (0);
-}
-void	print_data(t_data *data)
-{
-	printf("Num of philos: %d\n", data->num_of_philos);
-	printf("Time to die: %zu\n", data->time_to_die);
-	printf("Time to eat: %d\n", data->time_to_eat);
-	printf("Time to sleep: %d\n", data->time_to_sleep);
 }
 
 int	init_data(char **argv, t_data *data)
@@ -65,23 +58,6 @@ int	init_data(char **argv, t_data *data)
 	}
 	return (0);
 }
-void	print_philos(t_philo *philo, t_data data)
-{
-	int	i = 0;
-	while (i < data.num_of_philos)
-	{
-		printf("PRINTING PHILO NUM: %d\n", philo[i].philo_index);
-		printf("index: %d\n", philo[i].philo_index);
-		printf("right fork: %p\n", (void *)philo[i].right_fork);
-		printf("left fork: %p\n", (void *)philo[i].left_fork);
-		printf("philo alive: %d\n", philo[i].alive);
-		printf("data test, start time: %zu\n", philo[i].data->start_time);
-		printf("philo alive: %d\n", philo[i].alive);
-		printf("philo meals eaten: %d\n", philo[i].num_meals_eaten);
-		printf("philo last meal: %zu\n", philo[i].last_meal_time);
-		i++;
-	}
-}
 
 int	init_philos(t_philo *philo, t_data *data)
 {
@@ -93,7 +69,7 @@ int	init_philos(t_philo *philo, t_data *data)
 		philo[i].data = data;
 		philo[i].philo_index = i + 1;
 		philo[i].num_meals_eaten = 0;
-		philo[i].last_meal_time = data->start_time;//was previously getcurrenttime but this seems more consistent
+		philo[i].last_meal_time = data->start_time;
 		philo[i].alive = true;
 		philo[i].all_meals_eaten = false;
 		philo[i].right_fork = &data->forks[i];
@@ -107,14 +83,7 @@ int	init_philos(t_philo *philo, t_data *data)
 			printf("Error initializing meal_lock mutex\n");
 			return (1);
 		}
-		// if (pthread_mutex_init(&philo[i].alive_lock, NULL) != 0)
-		// {
-		// 	destroy_data_mutexes(data);
-		// 	printf("Error initializing meal_lock mutex\n");
-		// 	return (1);
-		// }
 		i++;
 	}
-	print_philos(philo, *data);//delete later
 	return (0);
 }
