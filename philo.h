@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 13:20:40 by lburkins          #+#    #+#             */
-/*   Updated: 2024/06/17 14:32:32 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/17 15:32:26 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include <stdio.h> //printf
 # include <stdlib.h> //malloc, free
-# include <string.h> //memset
 # include <unistd.h> //usleep, write
 # include <sys/time.h> //gettimeofday
 # include <pthread.h> //Threads: create/join/detach. Mutexes: init/destroy/lock
