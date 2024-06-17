@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 13:30:08 by lburkins          #+#    #+#             */
-/*   Updated: 2024/06/13 14:19:47 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/17 14:32:37 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ static int	death_check(t_philo *philo)
 		{
 			pthread_mutex_lock(&philo->data->death_lock);
 			philo->data->dead_flag = true;
-			philo[i].alive = false;
 			pthread_mutex_unlock(&philo->data->death_lock);
 			return (1);
 		}

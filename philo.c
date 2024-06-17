@@ -6,7 +6,7 @@
 /*   By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 15:49:55 by lburkins          #+#    #+#             */
-/*   Updated: 2024/06/13 16:13:51 by lburkins         ###   ########.fr       */
+/*   Updated: 2024/06/17 12:04:18 by lburkins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,12 @@ static int	check_args(int argc, char **argv)
 	if (ft_atoi(argv[1]) < 1)
 	{
 		printf("Error. At least 1 philosopher required\n");
-		return (-1);
+		return (1);
 	}
 	while (argv[i])
 	{
 		if (check_value(argv[i]) != 0)
-			return (-1);
+			return (1);
 		i++;
 	}
 	return (0);

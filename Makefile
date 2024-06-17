@@ -6,7 +6,7 @@
 #    By: lburkins <lburkins@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/16 15:43:19 by lburkins          #+#    #+#              #
-#    Updated: 2024/06/13 16:43:44 by lburkins         ###   ########.fr        #
+#    Updated: 2024/06/17 14:45:19 by lburkins         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ CC			=		cc
 
 RM			=		@rm -f
 
-CFLAGS		=		-Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS		=		-Wall -Wextra -Werror
 
 ANSI_GREEN := \033[0;32m
 ANSI_CYAN := \033[0;36m
